@@ -1,6 +1,4 @@
 # 721 Project 1
-## Jackie Du 
-
 
 Initial idea:
 
