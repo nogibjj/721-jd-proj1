@@ -1,6 +1,12 @@
-# rust-new-project-template
-A good starting point for a new Rust project
+# 721 Project 1
+## Jackie Du 
 
-## References
 
-* [rust-cli-template](https://github.com/kbknapp/rust-cli-template)
+Initial idea:
+
+Specific data & model TBD
+
+- Read in data 
+- Train model 
+- User will provide inputs via CLI 
+- Model will generate and return predictions (in a nice format)
