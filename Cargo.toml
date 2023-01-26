@@ -4,4 +4,3 @@ version = "0.1.0"
 
 [dependencies]
 clap = { version = "4.0.32", features = ["derive"] }
-indicatif = {version = "*", features = ["rayon"]}

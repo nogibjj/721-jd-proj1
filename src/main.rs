@@ -3,21 +3,52 @@ use clap::Parser;
 
 #[derive(Parser)]
 //add extended help
-#[clap(version = "1.0", author = "Jackie Du", about = "Finds duplicate files")]
-struct Args {
-    /// Name of the person to greet
-    #[arg(short, long)]
-    name: String,
+#[clap(version = "1.0", author = "Jackie Du", about = None)]
+struct Cli {
+    #[clap(subcommand)]
+    command: Option<Commands>,
+}
 
-    /// Number of times to greet
-    #[arg(short, long, default_value_t = 1)]
-    count: u8,
+#[derive(Parser)]
+enum Commands {
+    Stats {
+        #[clap(long)]
+        player: String,
+        #[clap(long, default_value = None)]
+        year: u16,
+    },
+    H2H {
+        #[clap(long)]
+        player: String,
+        #[clap(long)]
+        opponent: String,
+    },
+    Predict {
+        #[clap(long)]
+        player: String,
+        #[clap(long)]
+        opponent: String,
+    },
 }
 
 fn main() {
-    let args = Args::parse();
+    let cli = Cli::parse();
 
-    for _ in 0..args.count {
-        println!("Hello {}!", args.name)
+    match cli.command {
+        Some(Commands::Stats { player, year }) => {
+            println!("Test {0}, {1}", player, year);
+        }
+        Some(Commands::H2H { player, opponent }) => {
+            println!("{}", opponent);
+            println!("{}", player);
+        }
+        Some(Commands::Predict { player, opponent }) => {
+            println!("{}", opponent);
+            println!("{}", player);
+        }
+
+        None => {
+            println!("No command given");
+        }
     }
 }
