@@ -33,6 +33,7 @@ enum Commands {
 
 fn main() {
     let cli = Cli::parse();
+    let df = cli_proj::read_csv("final_df.csv");
 
     match cli.command {
         Some(Commands::Stats { player, year }) => {
