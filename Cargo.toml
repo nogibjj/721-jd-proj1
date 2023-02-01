@@ -4,5 +4,5 @@ version = "0.1.0"
 
 [dependencies]
 clap = { version = "4.0.32", features = ["derive"] }
-polars = {version = "0.26.1"}
+polars = {version = "0.26.1", features=["lazy"]}
 csv = {version = "1.1.6"}
