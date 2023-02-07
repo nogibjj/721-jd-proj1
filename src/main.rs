@@ -45,7 +45,7 @@ fn main() {
 
             // check if h2h_df is empty
             if player_df.height() == 0 {
-                println!("No stats record found for {} for the year {}", player, year);
+                println!("No stats record found for {player} for the year {year}");
                 return;
             }
 
@@ -117,7 +117,7 @@ fn main() {
 
             // check if h2h_df is empty
             if h2h_df.height() == 0 {
-                println!("No head-to-head record found for {} and {}", first, second);
+                println!("No head-to-head record found for {first} and {second}");
                 return;
             }
 
