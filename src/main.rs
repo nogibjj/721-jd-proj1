@@ -57,10 +57,22 @@ fn main() {
                 .collect()
                 .unwrap();
 
-            let melted = player_df_last.melt(["index", "Name", "Year"], 
-        ["Aces", "Double Faults", "Service Points Won",
-        	"Break Points Converted", "Sets Won", "Tiebreaks Won",
-            	"Wins", "Match Duration", "Year"]).expect("Could not melt");
+            let melted = player_df_last
+                .melt(
+                    ["index", "Name", "Year"],
+                    [
+                        "Aces",
+                        "Double Faults",
+                        "Service Points Won",
+                        "Break Points Converted",
+                        "Sets Won",
+                        "Tiebreaks Won",
+                        "Wins",
+                        "Match Duration",
+                        "Year",
+                    ],
+                )
+                .expect("Could not melt");
 
             // select the third to last column in player_df_last
             let final_df = melted
@@ -80,9 +92,8 @@ fn main() {
             // print accordingly
             println!();
             println!();
-            println!("Average Career Stats of {0} up to {1}", player, year);
-            println!("{}", final_df);
-
+            println!("Average Career Stats of {player} up to {year}");
+            println!("{final_df}");
         }
         Some(Commands::H2H { player, opponent }) => {
             // read csv
@@ -119,7 +130,7 @@ fn main() {
                 .collect()
                 .unwrap();
 
-            let year_agg_rec = h2h_df.clone()
+            let year_agg_rec = h2h_df
                 .lazy()
                 .groupby([col("year")])
                 .agg(vec![col("h2h_win").sum(), col("h2h_lose").sum()])
@@ -128,7 +139,8 @@ fn main() {
             //fix column names
 
             // rename columns in year_agg_rec from h2h_win to win and h2h_lose to lose
-            let year_agg_rec_fin = year_agg_rec.clone()
+            let year_agg_rec_fin = year_agg_rec
+                .clone()
                 .lazy()
                 .select(&[
                     col("year").alias("Year"),
@@ -138,7 +150,6 @@ fn main() {
                 .collect()
                 .unwrap();
 
-
             // get value from agg_rec as a scalar value
             let first_win = agg_rec["h2h_win"].i64().unwrap().get(0).unwrap();
             let second_win = agg_rec["h2h_lose"].i64().unwrap().get(0).unwrap();
@@ -146,30 +157,22 @@ fn main() {
             let duration = year_agg_rec["year"].i64().unwrap().max().unwrap()
                 - year_agg_rec["year"].i64().unwrap().min().unwrap();
             let total = first_win + second_win;
+            let first_win_pct = ((first_win as f64 / total as f64) * 100.0).round();
+            let second_win_pct = ((second_win as f64 / total as f64) * 100.0).round();
 
             // print accordingly
             println!();
             println!();
             println!(
-                "{} and {} have played {} times over the course of {} years",
-                first,
-                second,
-                total,
-                duration
+                "{first} and {second} have played {total} times over the course of {duration} years",
             );
             println!(
-                "{} {} ({}%) vs {} ({}%) {}",
-                first,
-                first_win,
-                ((first_win as f64 / total as f64) * 100.0).round(),
-                second_win,
-                ((second_win as f64 / total as f64) * 100.0).round(),
-                second
+                "{first} {first_win} ({first_win_pct}% ) vs {second_win} ({second_win_pct}%) {second}",
             );
 
             println!();
             println!("Stats by Year:");
-            println!("{:?}", year_agg_rec_fin);
+            println!("{year_agg_rec_fin:?}");
         }
         None => {
             println!("No command given");
