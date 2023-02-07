@@ -17,7 +17,7 @@ enum Commands {
     Stats {
         #[clap(long)]
         player: String,
-        #[clap(long, default_value = None)]
+        #[clap(long, default_value = "2020")]
         year: u16,
     },
     H2H {
@@ -34,20 +34,55 @@ fn main() {
     match cli.command {
         Some(Commands::Stats { player, year }) => {
             // read csv
-            let df = cli_proj::read_csv("final_df.csv").expect("Could not read csv");
+            let df = cli_proj::read_csv("player_df.csv").expect("Could not read csv");
             // filter by inputted player and year
             let player_df = df
                 .lazy()
-                .filter(col("player").eq(lit(player.clone())))
-                .filter(col("year").eq(lit(year as u32)))
+                .filter(col("Name").eq(lit(player.clone())))
+                .filter(col("Year").eq(lit(year as u32)))
                 .collect()
                 .unwrap();
 
-            // find some average stats
+            // check if h2h_df is empty
+            if player_df.height() == 0 {
+                println!("No stats record found for {} for the year {}", player, year);
+                return;
+            }
+
+            // select row in player_df where index is equal to the max of the index column
+            let player_df_last = player_df
+                .clone()
+                .lazy()
+                .filter(col("index").eq(lit(player_df["index"].i64().unwrap().max().unwrap())))
+                .collect()
+                .unwrap();
+
+            let melted = player_df_last.melt(["index", "Name", "Year"], 
+        ["Aces", "Double Faults", "Service Points Won",
+        	"Break Points Converted", "Sets Won", "Tiebreaks Won",
+            	"Wins", "Match Duration", "Year"]).expect("Could not melt");
+
+            // select the third to last column in player_df_last
+            let final_df = melted
+                .drop("index")
+                .unwrap()
+                .drop("Name")
+                .unwrap()
+                .lazy()
+                .select(&[
+                    col("variable").alias("Statistic"),
+                    col("value").alias("Average"),
+                ])
+                .filter(col("Statistic").neq(lit("Year")))
+                .collect()
+                .unwrap();
 
             // print accordingly
-            println!("Test {0}, {1}", player, year);
-            println!("{}", player_df.head(Some(1)));
+            println!();
+            println!();
+            println!("Average Career Stats of {0} up to {1}", player, year);
+            println!("{}", final_df);
+
         }
         Some(Commands::H2H { player, opponent }) => {
             // read csv
@@ -113,6 +148,8 @@ fn main() {
             let total = first_win + second_win;
 
             // print accordingly
+            println!();
+            println!();
             println!(
                 "{} and {} have played {} times over the course of {} years",
                 first,
