@@ -34,7 +34,7 @@ fn main() {
     match cli.command {
         Some(Commands::Stats { player, year }) => {
             // read csv
-            let df = cli_proj::read_csv("player_df.csv").expect("Could not read csv");
+            let df = cli_proj::read_csv("data/player_df.csv").expect("Could not read csv");
             // filter by inputted player and year
             let player_df = df
                 .lazy()
@@ -97,7 +97,7 @@ fn main() {
         }
         Some(Commands::H2H { player, opponent }) => {
             // read csv
-            let df = cli_proj::read_csv("h2h.csv").expect("Could not read csv");
+            let df = cli_proj::read_csv("data/h2h.csv").expect("Could not read csv");
             // determine order of players
             let first = if player < opponent {
                 player.clone()
