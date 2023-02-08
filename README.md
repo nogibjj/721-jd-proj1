@@ -7,7 +7,7 @@ A command-line tool that provides statistics on tennis player's career and head-
 ### Architecture 
 Data on all men's professional tennis matches (ATP tour) between 1991-2016 comes from https://datahub.io/sports-data/atp-world-tour-tennis-data. 
 
-<img width="659" alt="image" src="https://user-images.githubusercontent.com/86393045/217546288-62fd1758-b87a-45a8-9546-335e6ead604a.png">
+<img width="644" alt="image" src="https://user-images.githubusercontent.com/86393045/217547567-4088a260-4e09-4f4b-820d-53f8ba024e57.png">
 
 
 
